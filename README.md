@@ -1,1 +1,1 @@
-# git-practice
+# We are Team Awesome, building cool stuff together!
