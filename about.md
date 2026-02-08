@@ -1,0 +1,1 @@
+Michael Fehdrau - I am a fashion transition to become AI software engineering.  I have some experiences in UI/UX design and web development in the past. I eagar to learn more on javascript and python because I know some of it in the past. 
