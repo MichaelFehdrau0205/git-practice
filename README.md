@@ -1,1 +1,1 @@
-# We are Team Awesome, building cool stuff together!
+# Work Smart
