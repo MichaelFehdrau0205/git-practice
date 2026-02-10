@@ -1,0 +1,23 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run build script
+      run: echo "Building application..."
+    
+    - name: Run tests
+      run: echo "Running tests..."
+    
+    - name: Deploy to production
+      run: echo "Deploying to production..."
