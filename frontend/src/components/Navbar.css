@@ -1,0 +1,166 @@
+/* Navbar Container - iPad Optimized (768px - 1024px) */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;
+  box-shadow: var(--shadow-soft);
+}
+
+.navbar-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Logo Section */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--airbnb-red);
+  font-family: 'Circular', 'Circular Std', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Navigation Links */
+.navbar-links {
+  display: flex;
+  gap: 24px;
+  margin-left: 24px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: var(--bg-subtle);
+}
+
+.nav-link.active {
+  background-color: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* Search Bar */
+.navbar-search {
+  flex: 1;
+  max-width: 460px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 6px 6px 6px 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  background: var(--bg-primary);
+}
+
+.navbar-search:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.search-segment {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.search-muted {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.search-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border-color);
+}
+
+.search-button {
+  background: var(--airbnb-red);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-button:hover {
+  background: var(--airbnb-red-dark);
+}
+
+/* Profile Button */
+.navbar-profile {
+  display: flex;
+  align-items: center;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.profile-button:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* iPad Portrait (768px) */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 12px 20px;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-search {
+    max-width: 100%;
+    padding: 6px 6px 6px 12px;
+  }
+
+  .search-segment:nth-of-type(3),
+  .search-divider:nth-of-type(2) {
+    display: none;
+  }
+}
+
+/* iPad Landscape (1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar-container {
+    padding: 16px 32px;
+  }
+}

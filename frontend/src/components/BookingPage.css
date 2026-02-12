@@ -1,0 +1,231 @@
+/* Booking Page Container */
+.booking-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* Header Section */
+.booking-header {
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: none;
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: var(--bg-subtle);
+}
+
+.booking-header h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+/* Booking Grid - 3 columns × flexible rows */
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* Booking Card */
+.booking-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.booking-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Experience Image - 3" wide × 2" height (288px × 192px for iPad) */
+.booking-image-container {
+  width: 100%;
+  height: 192px;
+  overflow: hidden;
+}
+
+.booking-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Booking Details Section */
+.booking-details {
+  padding: 20px;
+}
+
+.experience-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.date-input,
+.time-select,
+.guests-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.date-input:focus,
+.time-select:focus,
+.guests-select:focus {
+  outline: none;
+  border-color: var(--text-primary);
+}
+
+/* Price Info */
+.price-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 16px;
+}
+
+.price-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.price-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Footer Section */
+.booking-footer {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.total-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.total-label {
+  font-size: 16px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.total-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--airbnb-red);
+}
+
+.reserve-button {
+  padding: 16px 48px;
+  background: var(--airbnb-red);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reserve-button:hover {
+  background: var(--airbnb-red-dark);
+}
+
+/* iPad Portrait (768px) */
+@media (max-width: 768px) {
+  .booking-page {
+    padding: 32px 20px;
+  }
+
+  .booking-header h1 {
+    font-size: 28px;
+  }
+
+  .booking-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .booking-image-container {
+    height: 160px;
+  }
+
+  .booking-footer {
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .reserve-button {
+    width: 100%;
+  }
+}
+
+/* iPad Landscape (1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .booking-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .booking-image-container {
+    height: 192px;
+  }
+}

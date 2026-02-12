@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="Travel background">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffb347" />
+      <stop offset="50%" stop-color="#ffcc33" />
+      <stop offset="100%" stop-color="#ffd9a3" />
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <rect y="520" width="1600" height="380" fill="url(#sea)" />
+
+  <circle cx="230" cy="170" r="70" fill="#fff3c4" opacity="0.9" />
+  <circle cx="290" cy="130" r="35" fill="#fff9e1" opacity="0.7" />
+
+  <path d="M0 540 C 240 470, 480 610, 720 540 C 980 470, 1180 610, 1600 540 L 1600 900 L 0 900 Z" fill="#ffffff" opacity="0.25" />
+  <path d="M0 620 C 300 560, 520 690, 820 620 C 1100 560, 1300 700, 1600 630 L 1600 900 L 0 900 Z" fill="#ffffff" opacity="0.18" />
+
+  <text x="80" y="860" font-family="Arial, sans-serif" font-size="42" fill="#ffffff" opacity="0.8">
+    Explore unique experiences
+  </text>
+</svg>

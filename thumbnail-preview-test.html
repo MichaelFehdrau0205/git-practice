@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thumbnail Preview Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f7f7;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #FF5A5F;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #717171;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+
+    /* Upload Section */
+    .upload-section {
+      border: 3px dashed #dddddd;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      background: #fafafa;
+    }
+
+    .upload-section h2 {
+      margin-bottom: 20px;
+      color: #222;
+      font-size: 24px;
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .upload-button {
+      background: #FF5A5F;
+      color: white;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .upload-button:hover {
+      background: #e00007;
+    }
+
+    .instructions {
+      margin-top: 20px;
+      color: #717171;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Thumbnails Grid - EXACT SAME AS YOUR AIRBNB APP */
+    .thumbnails-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .thumbnail-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 3px solid transparent;
+      background: #f0f0f0;
+    }
+
+    .thumbnail-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* THIS IS THE KEY CSS - MAKES ALL IMAGES SAME SIZE */
+    .thumbnail-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;  /* Magic property! */
+      display: block;
+    }
+
+    .thumbnail-name {
+      padding: 8px;
+      font-size: 12px;
+      color: #222;
+      text-align: center;
+      background: white;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Image Info */
+    .image-info {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .count {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #222;
+      font-weight: 600;
+    }
+
+    /* Explanation Box */
+    .explanation {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .explanation h3 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+
+    .explanation p {
+      color: #856404;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .explanation strong {
+      color: #FF5A5F;
+    }
+
+    /* iPad responsive */
+    @media (max-width: 768px) {
+      .thumbnails-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      
+      .thumbnail-card img {
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🖼️ Thumbnail Preview Test</h1>
+    <p class="subtitle">See how your images will look in the Airbnb app!</p>
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+      <h2>Upload Your Images</h2>
+      <input 
+        type="file" 
+        id="imageUpload" 
+        class="upload-input" 
+        accept="image/*" 
+        multiple
+      />
+      <button class="upload-button" onclick="document.getElementById('imageUpload').click()">
+        Choose Images
+      </button>
+      <div class="instructions">
+        <p><strong>Instructions:</strong></p>
+        <p>1. Click the button above</p>
+        <p>2. Select multiple images (hold Shift or Ctrl/Cmd)</p>
+        <p>3. See them displayed as thumbnails below</p>
+        <p>4. Notice how ALL images become the same size automatically!</p>
+      </div>
+    </div>
+
+    <!-- Count Display -->
+    <div class="count" id="imageCount">
+      No images uploaded yet
+    </div>
+
+    <!-- Thumbnails Grid -->
+    <div class="thumbnails-grid" id="thumbnailsGrid">
+      <!-- Images will appear here -->
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="explanation">
+      <h3>✨ How This Works:</h3>
+      <p>
+        <strong>object-fit: cover</strong> is the CSS property that does the magic!
+      </p>
+      <p>
+        • It takes images of ANY size (horizontal, vertical, square)<br>
+        • Automatically crops them to fit the container<br>
+        • Centers the important part<br>
+        • Makes them all uniform: <strong>width: 100%, height: 120px</strong>
+      </p>
+      <p>
+        <strong>You don't need Photoshop!</strong> The browser does all the work automatically.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const imageUpload = document.getElementById('imageUpload');
+    const thumbnailsGrid = document.getElementById('thumbnailsGrid');
+    const imageCount = document.getElementById('imageCount');
+
+    imageUpload.addEventListener('change', function(e) {
+      const files = e.target.files;
+      
+      // Clear previous thumbnails
+      thumbnailsGrid.innerHTML = '';
+
+      if (files.length === 0) {
+        imageCount.textContent = 'No images uploaded yet';
+        return;
+      }
+
+      // Update count
+      imageCount.textContent = `Showing ${files.length} images as thumbnails`;
+
+      // Display each image
+      Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          // Get original image dimensions
+          const img = new Image();
+          img.src = event.target.result;
+          
+          img.onload = function() {
+            const orientation = img.width > img.height ? 'H' : img.width < img.height ? 'V' : 'S';
+            const dimensionText = `${orientation} ${img.width}x${img.height}`;
+            
+            // Create thumbnail card
+            const card = document.createElement('div');
+            card.className = 'thumbnail-card';
+            card.innerHTML = `
+              <div class="image-info">${dimensionText}</div>
+              <img src="${event.target.result}" alt="Preview ${index + 1}" />
+              <p class="thumbnail-name">${file.name}</p>
+            `;
+            
+            thumbnailsGrid.appendChild(card);
+          };
+        };
+        
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+</body>
+</html>

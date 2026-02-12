@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320" role="img" aria-label="Experience thumbnail">
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff6b6b" />
+      <stop offset="100%" stop-color="#ffd93d" />
+    </linearGradient>
+  </defs>
+
+  <rect width="480" height="320" rx="24" fill="url(#card)" />
+  <circle cx="360" cy="90" r="48" fill="#ffffff" opacity="0.45" />
+  <circle cx="400" cy="70" r="24" fill="#ffffff" opacity="0.35" />
+
+  <path d="M0 250 C 80 210, 160 280, 240 250 C 320 220, 400 290, 480 260 L 480 320 L 0 320 Z" fill="#ffffff" opacity="0.25" />
+
+  <text x="32" y="70" font-family="Arial, sans-serif" font-size="28" fill="#ffffff" opacity="0.9">
+    Experience
+  </text>
+  <text x="32" y="110" font-family="Arial, sans-serif" font-size="22" fill="#ffffff" opacity="0.8">
+    Preview
+  </text>
+</svg>
