@@ -87,17 +87,19 @@ const Navbar = ({ onContinue }) => {
               />
             </div>
             <span className="search-divider" />
-            <div className="search-field">
+            <div 
+              className="search-field"
+              onMouseEnter={() => setShowCalendar(true)}
+              onMouseLeave={() => setShowCalendar(false)}
+            >
               <label className="search-label">When</label>
               <input 
                 type="text" 
                 placeholder="Add dates" 
                 className="search-input"
-                onClick={() => setShowCalendar(!showCalendar)}
-                readOnly
               />
               {showCalendar && (
-                <div className="calendar-popup" onClick={(e) => e.stopPropagation()}>
+                <div className="calendar-popup">
                   <div className="calendar-header">February 2026</div>
                   <div className="calendar-grid">
                     <div className="calendar-day-header">Sun</div>

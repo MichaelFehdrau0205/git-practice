@@ -1,26 +1,33 @@
-/* Navbar Container - iPad Optimized (768px - 1024px) */
+/* ============================================
+   NAVBAR STYLES - COMPLETE VERSION
+   ============================================ */
+
+/* Navbar Container */
 .navbar {
-  position: fixed;
+  background: white;
+  border-bottom: 1px solid #ebebeb;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
   z-index: 100;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Row 1: Logo and Main Navigation */
+.navbar-top-row {
+  padding: 16px 0;
+  border-bottom: 1px solid #ebebeb;
 }
 
 .navbar-container {
-  max-width: 1120px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 18px 24px;
+  padding: 0 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  align-items: center;
 }
 
-/* Logo Section */
+/* Logo */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -30,137 +37,287 @@
 
 .logo-text {
   font-size: 20px;
-  font-weight: 600;
-  color: var(--airbnb-red);
-  font-family: 'Circular', 'Circular Std', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  color: #ff385c;
 }
 
-/* Navigation Links */
-.navbar-links {
+/* Main Navigation Links - CENTER */
+.navbar-main-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 24px;
-  margin-left: 24px;
+  gap: 32px;
+  align-items: center;
 }
 
 .nav-link {
   text-decoration: none;
-  color: var(--text-primary);
-  font-size: 16px;
+  color: #222;
+  font-size: 14px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 12px;
-  border-radius: 999px;
-  transition: background-color 0.2s;
+  border-radius: 24px;
+  transition: all 0.2s;
+  position: relative;
 }
 
 .nav-link:hover {
-  background-color: var(--bg-subtle);
+  background: #f7f7f7;
 }
 
 .nav-link.active {
-  background-color: var(--bg-subtle);
-  font-weight: 600;
+  background: #f7f7f7;
 }
 
-/* Search Bar */
-.navbar-search {
-  flex: 1;
-  max-width: 460px;
+.new-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ff385c;
+  background: #ffe0e6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Right Side */
+.navbar-right {
   display: flex;
   align-items: center;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  padding: 6px 6px 6px 16px;
+  gap: 16px;
+}
+
+.become-host {
+  text-decoration: none;
+  color: #222;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 24px;
+  transition: all 0.2s;
+}
+
+.become-host:hover {
+  background: #f7f7f7;
+}
+
+.globe-button {
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: box-shadow 0.2s;
-  background: var(--bg-primary);
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.globe-button:hover {
+  background: #f7f7f7;
+}
+
+.profile-menu {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  padding: 6px 8px 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-menu:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Row 2: Search Bar - CENTER */
+.navbar-search-row {
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-search {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  padding: 8px 8px 8px 24px;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  max-width: 850px;
+  width: 100%;
 }
 
 .navbar-search:hover {
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-.search-segment {
-  font-size: 14px;
+.search-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  position: relative;
+}
+
+.search-label {
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-primary);
-  padding: 4px 8px;
-  white-space: nowrap;
+  color: #222;
 }
 
-.search-muted {
-  font-weight: 400;
-  color: var(--text-muted);
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #717171;
+  background: transparent;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: #717171;
+}
+
+.search-input.search-muted {
+  color: #222;
 }
 
 .search-divider {
   width: 1px;
-  height: 22px;
-  background: var(--border-color);
+  height: 32px;
+  background: #ddd;
 }
 
 .search-button {
-  background: var(--airbnb-red);
+  background: linear-gradient(135deg, #ff385c 0%, #e61e4d 100%);
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .search-button:hover {
-  background: var(--airbnb-red-dark);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
 }
 
-/* Profile Button */
-.navbar-profile {
-  display: flex;
-  align-items: center;
+/* Calendar Popup Styles */
+.calendar-popup {
+  pointer-events: auto;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+  min-width: 280px;
+  animation: calendarSlideIn 0.2s ease-out;
 }
 
-.profile-button {
+@keyframes calendarSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.calendar-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #717171;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  background: var(--bg-primary);
+  justify-content: center;
+  font-size: 13px;
+  color: #222;
+  border-radius: 50%;
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
 }
 
-.profile-button:hover {
-  box-shadow: var(--shadow-hover);
+.calendar-day:not(.empty):hover {
+  background: #f7f7f7;
+  font-weight: 600;
 }
 
-/* iPad Portrait (768px) */
-@media (max-width: 768px) {
+.calendar-day.empty {
+  cursor: default;
+}
+
+.calendar-day.today {
+  background: #222;
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-day.today:hover {
+  background: #484848;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .navbar-main-links {
+    position: static;
+    transform: none;
+  }
+  
   .navbar-container {
-    padding: 12px 20px;
+    flex-direction: column;
+    gap: 16px;
   }
+}
 
-  .navbar-links {
-    display: none;
-  }
-
+@media (max-width: 768px) {
   .navbar-search {
     max-width: 100%;
-    padding: 6px 6px 6px 12px;
   }
-
-  .search-segment:nth-of-type(3),
-  .search-divider:nth-of-type(2) {
-    display: none;
+  
+  .search-field {
+    min-width: 80px;
   }
 }
 
-/* iPad Landscape (1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .navbar-container {
-    padding: 16px 32px;
-  }
-}
+
+
+

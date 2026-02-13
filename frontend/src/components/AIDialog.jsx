@@ -1,197 +1,432 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './AIDialog.css';
 
-const AIDialog = ({ onClose, onContinue }) => {
-  const [whereInput, setWhereInput] = useState('');
-  const [whenInput, setWhenInput] = useState('');
-  const [whoInput, setWhoInput] = useState('');
-  const [aiResponse, setAiResponse] = useState('');
-  const [thumbnails, setThumbnails] = useState([]);
-  const [selectedThumbnails, setSelectedThumbnails] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+const AIDialog = ({ isOpen, onClose, userName }) => {
+  const [messages, setMessages] = useState([]);
+  const [userInput, setUserInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [currentTypingText, setCurrentTypingText] = useState('');
+  const [typingIndex, setTypingIndex] = useState(0);
+  const [showPhotos, setShowPhotos] = useState(false);
+  const hasShownGreeting = useRef(false);
+  const [selectedExperiences, setSelectedExperiences] = useState([]);
+  const [viewMode, setViewMode] = useState('chat'); // 'chat' or 'review'
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(() => new Date());
 
-  // Handle user input submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!whereInput.trim()) return;
+  // Sample AI responses with photo suggestions
+  const aiResponses = {
+    greeting: {
+      text: userName 
+        ? `Hello ${userName.split(' ')[0]}! Which experience do you want to explore? Try church, city, winery, food, or adventure!`
+        : "Which experience do you want to explore? Try church, city, winery, food, or adventure!",
+      photos: []
+    },
+    church: {
+      text: "Here are beautiful church experiences!",
+      photos: [
+        { id: 1, url: 'https://images.unsplash.com/photo-1564594143981-f84277ab9d3c?w=400', title: 'Historic Cathedral Tour' },
+        { id: 2, url: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=400', title: 'Chapel Art & Architecture' },
+        { id: 3, url: 'https://images.unsplash.com/photo-1605962228706-0f52292dda28?w=400', title: 'Sacred Sites Walk' }
+      ]
+    },
+    city: {
+      text: "Check out these amazing city experiences!",
+      photos: [
+        { id: 4, url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400', title: 'Urban Walking Tour' },
+        { id: 5, url: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400', title: 'City Lights Experience' },
+        { id: 6, url: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400', title: 'Street Food Adventure' }
+      ]
+    },
+    winery: {
+      text: "Perfect! Here are wine experiences for you!",
+      photos: [
+        { id: 7, url: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400', title: 'Vineyard Tour & Tasting' },
+        { id: 8, url: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400', title: 'Wine Making Workshop' },
+        { id: 9, url: 'https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=400', title: 'Sunset Wine Experience' }
+      ]
+    },
+    food: {
+      text: "Check out these incredible culinary experiences!",
+      photos: [
+        { id: 10, url: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400', title: 'Cooking Class' },
+        { id: 11, url: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400', title: 'Food Tasting' },
+        { id: 12, url: 'https://images.unsplash.com/photo-1528712306091-ed0763094c98?w=400', title: 'Culinary Tour' }
+      ]
+    },
+    adventure: {
+      text: "Here are some amazing adventure experiences!",
+      photos: [
+        { id: 13, url: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=400', title: 'Mountain Hiking' },
+        { id: 14, url: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400', title: 'Rock Climbing' },
+        { id: 15, url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400', title: 'Kayaking Adventure' }
+      ]
+    }
+  };
 
-    setIsLoading(true);
-    
-    // Simulate AI response (you'll connect to backend later)
-    setTimeout(() => {
-      // Mock AI response
-      const travelDetails = [
-        whereInput.trim(),
-        whenInput.trim() ? `for ${whenInput.trim()}` : null,
-        whoInput.trim() ? `${whoInput.trim()} guest${Number(whoInput) === 1 ? '' : 's'}` : null
-      ].filter(Boolean).join(' • ');
-      const mockResponse = `Great choice! I found 15 amazing experiences in ${whereInput}. ${travelDetails ? `Details: ${travelDetails}.` : ''} Select the ones you'd like to explore:`;
-      setAiResponse(mockResponse);
-      
-      // Mock thumbnails based on city input
-      const cityLower = whereInput.toLowerCase();
-      let mockThumbnails = [];
-      
-      if (cityLower.includes('london')) {
-        mockThumbnails = generateMockThumbnails('london', 15);
-      } else if (cityLower.includes('paris')) {
-        mockThumbnails = generateMockThumbnails('paris', 15);
-      } else if (cityLower.includes('tokyo')) {
-        mockThumbnails = generateMockThumbnails('tokyo', 15);
+  // Typing animation effect
+  useEffect(() => {
+    if (isTyping && currentTypingText) {
+      if (typingIndex < currentTypingText.length) {
+        const timeout = setTimeout(() => {
+          setTypingIndex(typingIndex + 1);
+        }, 30); // Speed of typing (30ms per character)
+        return () => clearTimeout(timeout);
       } else {
-        mockThumbnails = generateMockThumbnails('london', 15); // default
-      }
-      
-      setThumbnails(mockThumbnails);
-      setIsLoading(false);
-    }, 1500);
-  };
-
-  // Generate mock thumbnails
-  const generateMockThumbnails = (city, count) => {
-    const thumbnails = [];
-    const basePrices = { london: 35, paris: 45, tokyo: 30 };
-    const basePrice = basePrices[city] || 35;
-    
-    for (let i = 1; i <= count; i++) {
-      thumbnails.push({
-        id: `${city}-${i}`,
-        name: `${city.charAt(0).toUpperCase() + city.slice(1)} Experience ${i}`,
-        image: '/images/thumbnails/placeholder.svg',
-        price: basePrice + (i * 2) // Varying prices
-      });
-    }
-    return thumbnails;
-  };
-
-  // Handle thumbnail selection
-  const toggleThumbnail = (id) => {
-    if (selectedThumbnails.includes(id)) {
-      setSelectedThumbnails(selectedThumbnails.filter(tid => tid !== id));
-    } else {
-      if (selectedThumbnails.length < 15) {
-        setSelectedThumbnails([...selectedThumbnails, id]);
+        // Typing complete
+        setIsTyping(false);
+        setShowPhotos(true);
       }
     }
+  }, [typingIndex, currentTypingText, isTyping]);
+
+  // Initial greeting - only show once
+  useEffect(() => {
+    if (isOpen && !hasShownGreeting.current) {
+      hasShownGreeting.current = true;
+      handleAIResponse(aiResponses.greeting);
+    }
+    
+    // Reset when dialog closes
+    if (!isOpen) {
+      hasShownGreeting.current = false;
+      setMessages([]);
+    }
+  }, [isOpen]);
+
+  const handleAIResponse = (response) => {
+    setIsTyping(true);
+    setCurrentTypingText(response.text);
+    setTypingIndex(0);
+    setShowPhotos(false);
+    
+    setMessages(prev => [...prev, {
+      type: 'ai',
+      text: response.text,
+      photos: response.photos,
+      timestamp: new Date()
+    }]);
   };
 
-  // Handle final selection
-  const handleFinalSelection = () => {
-    const selectedExps = thumbnails.filter(t => selectedThumbnails.includes(t.id));
-    console.log('Selected experiences:', selectedExps);
+  const handleSendMessage = () => {
+    if (!userInput.trim()) return;
+
+    // Add user message
+    setMessages(prev => [...prev, {
+      type: 'user',
+      text: userInput,
+      timestamp: new Date()
+    }]);
+
+    // Determine AI response based on keywords
+    const input = userInput.toLowerCase();
+    let response = aiResponses.greeting;
+
+    if (input.includes('church') || input.includes('cathedral') || input.includes('chapel')) {
+      response = aiResponses.church;
+    } else if (input.includes('city') || input.includes('urban') || input.includes('downtown')) {
+      response = aiResponses.city;
+    } else if (input.includes('winery') || input.includes('wine') || input.includes('vineyard')) {
+      response = aiResponses.winery;
+    } else if (input.includes('adventure') || input.includes('hiking') || input.includes('outdoor')) {
+      response = aiResponses.adventure;
+    } else if (input.includes('food') || input.includes('cooking') || input.includes('culinary')) {
+      response = aiResponses.food;
+    }
+
+    setUserInput('');
     
-    // Pass selected experiences to parent (will be used for navigation)
-    if (onContinue) {
-      onContinue(selectedExps);
+    // Delay AI response slightly for realism
+    setTimeout(() => {
+      handleAIResponse(response);
+    }, 500);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
     }
   };
+
+  const handlePhotoClick = (photo) => {
+    setSelectedExperiences(prev => {
+      const isSelected = prev.some(exp => exp.id === photo.id);
+      if (isSelected) {
+        return prev.filter(exp => exp.id !== photo.id);
+      } else {
+        return [...prev, photo];
+      }
+    });
+  };
+
+  const handleStartOver = () => {
+    setSelectedExperiences([]);
+    setMessages([]);
+    setViewMode('chat');
+    hasShownGreeting.current = false;
+    // Trigger greeting again
+    setTimeout(() => {
+      handleAIResponse(aiResponses.greeting);
+    }, 100);
+  };
+
+  const handleReview = () => {
+    setViewMode('review');
+  };
+
+  const handleBackToChat = () => {
+    setViewMode('chat');
+  };
+
+  const getMonthDays = (year, month) => new Date(year, month + 1, 0).getDate();
+
+  const makeDateKey = (year, month, day) => {
+    const mm = String(month + 1).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
+    return `${year}-${mm}-${dd}`;
+  };
+
+  const handleDayClick = (year, month, day) => {
+    const dateKey = makeDateKey(year, month, day);
+
+    if (!startDate || (startDate && endDate)) {
+      setStartDate(dateKey);
+      setEndDate(null);
+      return;
+    }
+
+    if (dateKey < startDate) {
+      setEndDate(startDate);
+      setStartDate(dateKey);
+      return;
+    }
+
+    setEndDate(dateKey);
+  };
+
+  const formatDateLabel = (dateKey) => {
+    if (!dateKey) return null;
+    const [year, month, day] = dateKey.split('-').map(Number);
+    const date = new Date(year, month - 1, day, 12);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const renderCalendarDays = () => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const totalDays = getMonthDays(year, month);
+    const startWeekday = new Date(year, month, 1).getDay();
+    const days = [];
+    const startKey = startDate;
+    const endKey = endDate;
+
+    for (let i = 0; i < startWeekday; i += 1) {
+      days.push(<div key={`empty-${i}`} className="calendar-day empty" />);
+    }
+
+    for (let day = 1; day <= totalDays; day += 1) {
+      const dateKey = makeDateKey(year, month, day);
+      const isStart = startKey === dateKey;
+      const isEnd = endKey === dateKey;
+      const isInRange = startKey && endKey && dateKey > startKey && dateKey < endKey;
+
+      days.push(
+        <button
+          type="button"
+          key={dateKey}
+          className={`calendar-day ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''} ${isInRange ? 'in-range' : ''}`}
+          onClick={() => handleDayClick(year, month, day)}
+        >
+          {day}
+        </button>
+      );
+    }
+
+    return days;
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <div className="dialog-overlay" onClick={onClose}>
-      <div className="dialog-box" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Dialog Header */}
-        <div className="dialog-header">
-          <h2>AI Travel Assistant</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+    <div className="ai-dialog-overlay" onClick={onClose}>
+      <div className="ai-dialog-container" onClick={(e) => e.stopPropagation()}>
+        <div className="ai-dialog-header">
+          <div className="ai-dialog-title">
+            <span className="ai-icon">🤖</span>
+            AI Experience Guide
+          </div>
+          <button className="ai-dialog-close" onClick={onClose}>×</button>
         </div>
 
-        {/* Dialog Content */}
-        <div className="dialog-content">
-          
-          {/* AI Message Area */}
-          <div className="ai-message">
-            <p>👋 Hi! Tell me where, when, and who is traveling so I can tailor the results.</p>
-            {aiResponse && (
-              <p className="ai-response">{aiResponse}</p>
-            )}
-          </div>
-
-          {/* User Input Form */}
-          <form onSubmit={handleSubmit} className="input-form">
-            <div className="ai-form-grid">
-              <label className="ai-field">
-                <span className="ai-label">Where</span>
-                <input
-                  type="text"
-                  value={whereInput}
-                  onChange={(e) => setWhereInput(e.target.value)}
-                  placeholder="City or destination"
-                  className="user-input"
-                  disabled={isLoading}
-                />
-              </label>
-              <label className="ai-field">
-                <span className="ai-label">When</span>
-                <input
-                  type="text"
-                  value={whenInput}
-                  onChange={(e) => setWhenInput(e.target.value)}
-                  placeholder="Add dates"
-                  className="user-input"
-                  disabled={isLoading}
-                />
-              </label>
-              <label className="ai-field">
-                <span className="ai-label">Who</span>
-                <input
-                  type="number"
-                  min="1"
-                  value={whoInput}
-                  onChange={(e) => setWhoInput(e.target.value)}
-                  placeholder="Guests"
-                  className="user-input"
-                  disabled={isLoading}
-                />
-              </label>
-            </div>
-            <button 
-              type="submit" 
-              className="submit-button"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Searching...' : 'Search'}
-            </button>
-          </form>
-
-          {/* Thumbnails Grid */}
-          {thumbnails.length > 0 && (
-            <div className="thumbnails-section">
-              <p className="selection-info">
-                Select up to 15 experiences ({selectedThumbnails.length}/15 selected)
-              </p>
-              
-              <div className="thumbnails-grid">
-                {thumbnails.map((thumb) => (
-                  <div
-                    key={thumb.id}
-                    className={`thumbnail-card ${selectedThumbnails.includes(thumb.id) ? 'selected' : ''}`}
-                    onClick={() => toggleThumbnail(thumb.id)}
+        {viewMode === 'chat' ? (
+          <>
+            <div className="calendar-panel">
+              <div className="calendar-header">
+                <div>
+                  <div className="calendar-title">When are you traveling?</div>
+                  <div className="calendar-subtitle">Select a start and end date for your vacation.</div>
+                </div>
+                <div className="calendar-controls">
+                  <button
+                    type="button"
+                    className="calendar-nav"
+                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                    aria-label="Previous month"
                   >
-                    <img src={thumb.image} alt={thumb.name} />
-                    <div className="thumbnail-overlay">
-                      {selectedThumbnails.includes(thumb.id) && (
-                        <div className="checkmark">✓</div>
-                      )}
-                    </div>
-                    <p className="thumbnail-name">{thumb.name}</p>
+                    ‹
+                  </button>
+                  <div className="calendar-month">
+                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </div>
+                  <button
+                    type="button"
+                    className="calendar-nav"
+                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                    aria-label="Next month"
+                  >
+                    ›
+                  </button>
+                </div>
+              </div>
+              <div className="calendar-selection">
+                <div className={`date-pill ${startDate ? 'active' : ''}`}>
+                  Start: {formatDateLabel(startDate) || 'Select'}
+                </div>
+                <div className={`date-pill ${endDate ? 'active' : ''}`}>
+                  End: {formatDateLabel(endDate) || 'Select'}
+                </div>
+              </div>
+              <div className="calendar-weekdays">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                  <div key={day} className="calendar-weekday">{day}</div>
                 ))}
               </div>
-
-              {selectedThumbnails.length > 0 && (
-                <button 
-                  className="next-button"
-                  onClick={handleFinalSelection}
-                >
-                  Continue with {selectedThumbnails.length} experiences →
-                </button>
-              )}
+              <div className="calendar-grid">
+                {renderCalendarDays()}
+              </div>
             </div>
+
+            <div className="ai-dialog-messages">
+              {messages.map((message, index) => (
+                <div key={index} className={`message ${message.type}`}>
+                  {message.type === 'ai' && (
+                    <div className="ai-avatar">🤖</div>
+                  )}
+                  <div className="message-content">
+                    <div className="message-text">
+                      {message.type === 'ai' && index === messages.length - 1 && isTyping
+                        ? currentTypingText.substring(0, typingIndex)
+                        : message.text}
+                      {message.type === 'ai' && index === messages.length - 1 && isTyping && (
+                        <span className="typing-cursor">|</span>
+                      )}
+                    </div>
+                    
+                    {message.photos && message.photos.length > 0 && (
+                      <div className="message-photos">
+                        {message.photos.map((photo, photoIndex) => {
+                          const isSelected = selectedExperiences.some(exp => exp.id === photo.id);
+                          return (
+                            <div
+                              key={photo.id}
+                              className={`photo-card ${
+                                index === messages.length - 1 && showPhotos ? 'animate-in' : ''
+                              } ${isSelected ? 'selected' : ''}`}
+                              style={{
+                                animationDelay: index === messages.length - 1 && showPhotos
+                                  ? `${photoIndex * 0.2}s`
+                                  : '0s'
+                              }}
+                              onClick={() => handlePhotoClick(photo)}
+                            >
+                              {isSelected && (
+                                <div className="photo-checkmark">
+                                  <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+                                    <path d="M7.629 14.566l-4.242-4.243L2 11.71l5.629 5.629L18.5 6.468 17.114 5.082z"/>
+                                  </svg>
+                                </div>
+                              )}
+                              <img src={photo.url} alt={photo.title} />
+                              <div className="photo-title">{photo.title}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="ai-dialog-input-container">
+              <input
+                type="text"
+                className="ai-dialog-input"
+                placeholder="Tell me what you're interested in..."
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <button className="ai-dialog-send" onClick={handleSendMessage}>
+                Send
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="ai-dialog-review">
+            <div className="review-header">
+              <h2>Review Your Selections</h2>
+              <p>
+                {userName 
+                  ? `Hey ${userName.split(' ')[0]}, great choice! You selected ${selectedExperiences.length} experience${selectedExperiences.length !== 1 ? 's' : ''}.`
+                  : `You selected ${selectedExperiences.length} experience${selectedExperiences.length !== 1 ? 's' : ''}.`
+                }
+              </p>
+            </div>
+            
+            <div className="review-experiences">
+              {selectedExperiences.map((exp) => (
+                <div key={exp.id} className="review-card">
+                  <img src={exp.url} alt={exp.title} />
+                  <div className="review-card-content">
+                    <h3>{exp.title}</h3>
+                    <button 
+                      className="remove-btn"
+                      onClick={() => handlePhotoClick(exp)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="review-actions">
+              <button className="back-to-chat-btn" onClick={handleBackToChat}>
+                ← Add More Experiences
+              </button>
+              <button className="confirm-booking-btn">
+                Confirm & Book
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Floating Action Buttons */}
+      {viewMode === 'chat' && (
+        <div className="ai-dialog-floating-actions">
+          <button className="floating-btn ghost-btn" onClick={handleStartOver}>
+            Start Over
+          </button>
+          {selectedExperiences.length > 0 && (
+            <button className="floating-btn primary-btn" onClick={handleReview}>
+              Review ({selectedExperiences.length})
+            </button>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
