@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
+import AIDialog from './AIDialog';
 import { DateRangePicker } from 'react-date-range';
-import { format } from 'date-fns';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import AIDialog from './AIDialog';
 import './Navbar.css';
 
-const Navbar = ({ onContinue }) => {
+const Navbar = ({ onContinue, onGoToBooking }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
@@ -17,7 +16,6 @@ const Navbar = ({ onContinue }) => {
       key: 'selection'
     }
   ]);
-  const [hasSelectedDates, setHasSelectedDates] = useState(false);
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -27,12 +25,6 @@ const Navbar = ({ onContinue }) => {
     setIsDialogOpen(false);
   };
 
-  const handleContinue = (experiences) => {
-    setIsDialogOpen(false);
-    if (onContinue) {
-      onContinue(experiences);
-    }
-  };
 
   const handleNameChange = (e) => {
     setGuestName(e.target.value);
@@ -40,35 +32,25 @@ const Navbar = ({ onContinue }) => {
 
   const handleDateChange = (ranges) => {
     setDateRange([ranges.selection]);
-    setHasSelectedDates(true);
   };
 
   const formatDateRange = () => {
-    if (hasSelectedDates && dateRange[0].startDate && dateRange[0].endDate) {
-      const start = format(dateRange[0].startDate, 'MMM d');
-      const end = format(dateRange[0].endDate, 'MMM d');
-      
-      // If same date, just show one date
-      if (start === end) {
-        return start;
-      }
-      return `${start} - ${end}`;
+    const start = dateRange[0].startDate;
+    let end = dateRange[0].endDate;
+    if (start && end && start.toDateString() === end.toDateString()) {
+      end = new Date(start);
+      end.setDate(end.getDate() + 6);
     }
-    return 'Add dates';
-  };
-
-  // Close calendar when clicking outside
-  const handleCalendarClick = (e) => {
-    e.stopPropagation();
+    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return `${startStr} - ${endStr}`;
   };
 
   return (
     <>
       <nav className="navbar">
-        {/* Row 1: Logo and Main Navigation */}
         <div className="navbar-top-row">
           <div className="navbar-container">
-            {/* Logo */}
             <div className="navbar-logo">
               <svg width="30" height="32" viewBox="0 0 30 32" fill="none">
                 <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 6.716 15 15 15 8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15zm0 27c-6.627 0-12-5.373-12-12S8.373 3 15 3s12 5.373 12 12-5.373 12-12 12z" fill="#ff385c"/>
@@ -76,7 +58,6 @@ const Navbar = ({ onContinue }) => {
               <span className="logo-text">airbnb</span>
             </div>
 
-            {/* Navigation Links - Homes, Experiences, Services */}
             <div className="navbar-main-links">
               <a href="#homes" className="nav-link">
                 <span>Homes</span>
@@ -91,7 +72,6 @@ const Navbar = ({ onContinue }) => {
               </a>
             </div>
 
-            {/* Right Side - Become a host, Globe, Profile */}
             <div className="navbar-right">
               <a href="#host" className="become-host">Become a host</a>
               <button className="globe-button" aria-label="Language and currency">
@@ -111,55 +91,42 @@ const Navbar = ({ onContinue }) => {
           </div>
         </div>
 
-        {/* Row 2: Search Bar */}
         <div className="navbar-search-row">
           <div className="navbar-search">
             <div className="search-field">
               <label className="search-label">Where</label>
-              <input 
-                type="text" 
-                placeholder="Search by city or landmark" 
+              <input
+                type="text"
+                placeholder="Search by city or landmark"
                 className="search-input"
               />
             </div>
             <span className="search-divider" />
             <div className="search-field" style={{ position: 'relative' }}>
               <label className="search-label">When</label>
-              <input 
-                type="text" 
-                placeholder={formatDateRange()}
+              <input
+                type="text"
+                placeholder="Add dates"
                 className="search-input"
-                onClick={() => setShowCalendar(!showCalendar)}
-                readOnly
                 value={formatDateRange()}
+                readOnly
+                onClick={() => setShowCalendar(!showCalendar)}
               />
               {showCalendar && (
-                <div className="calendar-popup" onClick={handleCalendarClick}>
-                 <DateRangePicker
-                  ranges={dateRange}
-                  onChange={handleDateChange}
-                  months={1}
-                  direction="vertical"
-                  showDateDisplay={false}
-                  showPreview={false}
-                  showMonthAndYearPickers={false}
-                  staticRanges={[]}
-                  inputRanges={[]}
-                  minDate={new Date()}
-                  rangeColors={['#FF385C']}
-                />
-                  <div style={{ padding: '16px', textAlign: 'right', borderTop: '1px solid #eee' }}>
+                <div className="calendar-popup" style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1000, background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', borderRadius: '12px', marginTop: '8px' }}>
+                  <DateRangePicker
+                    ranges={dateRange}
+                    onChange={handleDateChange}
+                    months={1}
+                    direction="horizontal"
+                    rangeColors={['#FF385C']}
+                    minDate={new Date()}
+                    showDateDisplay={false}
+                  />
+                  <div style={{ padding: '12px', borderTop: '1px solid #eee' }}>
                     <button 
                       onClick={() => setShowCalendar(false)}
-                      style={{
-                        padding: '8px 16px',
-                        background: '#FF385C',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontWeight: '600'
-                      }}
+                      style={{ width: '100%', padding: '10px', background: '#FF385C', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}
                     >
                       Done
                     </button>
@@ -167,16 +134,14 @@ const Navbar = ({ onContinue }) => {
                 </div>
               )}
             </div>
-            <span className="search-divider" />
             <div className="search-field">
               <label className="search-label">Who</label>
-              <input 
-                type="text" 
-                placeholder={hasSelectedDates ? "Add guests" : "Add dates first"}
-                className={`search-input ${!hasSelectedDates ? 'search-muted' : ''}`}
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="search-input search-muted"
                 value={guestName}
                 onChange={handleNameChange}
-                disabled={!hasSelectedDates}
               />
             </div>
             <button className="search-button" aria-label="Search" onClick={openDialog}>
@@ -188,11 +153,11 @@ const Navbar = ({ onContinue }) => {
         </div>
       </nav>
 
-      {/* AI Dialog Component */}
-      <AIDialog 
-        isOpen={isDialogOpen} 
+      <AIDialog
+        isOpen={isDialogOpen}
         onClose={closeDialog}
         userName={guestName}
+        onGoToBooking={onGoToBooking}
       />
     </>
   );

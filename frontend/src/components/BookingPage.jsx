@@ -10,6 +10,9 @@ const BookingPage = ({ selectedExperiences, onBack }) => {
       guests: 1
     }))
   );
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [summaryPayload, setSummaryPayload] = useState(null);
+  const [inlineWarning, setInlineWarning] = useState('');
 
   // Calculate total cost
   const totalCost = bookings.reduce((sum, booking) => {
@@ -29,9 +32,10 @@ const BookingPage = ({ selectedExperiences, onBack }) => {
     const allFilled = bookings.every(b => b.date && b.time);
     
     if (!allFilled) {
-      alert('Please fill in date and time for all experiences');
+      setInlineWarning('Please fill in date and time for all experiences before continuing.');
       return;
     }
+    setInlineWarning('');
 
     // Prepare reservation data
     const reservationData = {
@@ -40,11 +44,29 @@ const BookingPage = ({ selectedExperiences, onBack }) => {
       timestamp: new Date().toISOString()
     };
 
-    console.log('Reservation Data:', reservationData);
-    
-    // TODO: Send to backend API in Phase 2
-    // For now, just show confirmation
-    alert(`Reservation confirmed! Total: $${totalCost}\n\nCheck console for details.`);
+    setSummaryPayload(reservationData);
+    setShowSummaryModal(true);
+  };
+
+  const handleCloseSummary = () => {
+    setShowSummaryModal(false);
+  };
+
+  const handlePrintSummary = () => {
+    window.print();
+  };
+
+  const handleSaveSummary = () => {
+    if (!summaryPayload) return;
+    const blob = new Blob([JSON.stringify(summaryPayload, null, 2)], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `booking-summary-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -67,15 +89,18 @@ const BookingPage = ({ selectedExperiences, onBack }) => {
             {/* Experience Image - 3" wide × 2" height (288px × 192px) */}
             <div className="booking-image-container">
               <img 
-                src={booking.image} 
-                alt={booking.name} 
+                src={booking.image || booking.url} 
+                alt={booking.name || booking.title} 
                 className="booking-image"
+                onError={(e) => {
+                  e.currentTarget.src = '/images/paris-notredame.jpg';
+                }}
               />
             </div>
 
             {/* Experience Details */}
             <div className="booking-details">
-              <h3 className="experience-title">{booking.name}</h3>
+              <h3 className="experience-title">{booking.name || booking.title}</h3>
               
               {/* Date Picker */}
               <div className="form-group">
@@ -148,6 +173,95 @@ const BookingPage = ({ selectedExperiences, onBack }) => {
           Reserve All Experiences
         </button>
       </div>
+
+      {inlineWarning && (
+        <div className="booking-inline-warning">
+          {inlineWarning}
+        </div>
+      )}
+
+      {showSummaryModal && summaryPayload && (
+        <div className="summary-modal-overlay" onClick={handleCloseSummary}>
+          <div className="summary-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="summary-header">
+              <div className="summary-logo">
+                <span className="summary-logo-mark" aria-hidden="true">◎</span>
+                <span className="summary-logo-text">airbnb</span>
+              </div>
+              <h2>Final Booking Summary</h2>
+              <p>We keep a record and will make your experience more enjoyable.</p>
+            </div>
+
+            <div className="summary-section">
+              <h3>Mini Information</h3>
+              <div className="summary-grid">
+                <div>
+                  <span className="summary-label">Experiences</span>
+                  <span className="summary-value">{summaryPayload.bookings.length}</span>
+                </div>
+                <div>
+                  <span className="summary-label">Total Guests</span>
+                  <span className="summary-value">
+                    {summaryPayload.bookings.reduce((sum, b) => sum + b.guests, 0)}
+                  </span>
+                </div>
+                <div>
+                  <span className="summary-label">Date Range</span>
+                  <span className="summary-value">
+                    {summaryPayload.bookings[0]?.date || '—'}
+                  </span>
+                </div>
+                <div>
+                  <span className="summary-label">Created</span>
+                  <span className="summary-value">
+                    {new Date(summaryPayload.timestamp).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="summary-section">
+              <h3>Selected Experiences</h3>
+              <div className="summary-list">
+                {summaryPayload.bookings.map((booking, index) => (
+                  <div key={index} className="summary-item">
+                    <div>
+                      <div className="summary-item-title">{booking.name || booking.title}</div>
+                      <div className="summary-item-meta">
+                        {booking.date || 'Date'} · {booking.time || 'Time'} · {booking.guests} guests
+                      </div>
+                    </div>
+                    <div className="summary-item-price">
+                      ${booking.price * booking.guests}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="summary-note">
+                Need to make changes? We can help with adjustments up to two weeks before your experience,
+                so everything stays smooth and enjoyable. Learn more about changes and support.
+              </p>
+              <a className="summary-link" href="#support">
+                View change policy
+              </a>
+            </div>
+
+            <div className="summary-total">
+              <span>Total Cost</span>
+              <strong>${summaryPayload.totalCost}</strong>
+            </div>
+
+            <div className="summary-actions">
+              <button className="summary-btn secondary" onClick={handlePrintSummary}>
+                Printout
+              </button>
+              <button className="summary-btn primary" onClick={handleSaveSummary}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

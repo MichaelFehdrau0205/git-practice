@@ -56,6 +56,7 @@
   border-radius: 16px;
   overflow: hidden;
   transition: box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
 }
 
 .booking-card:hover {
@@ -79,6 +80,7 @@
 /* Booking Details Section */
 .booking-details {
   padding: 20px;
+  background: #f4f6f8;
 }
 
 .experience-title {
@@ -97,7 +99,7 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #334155;
   margin-bottom: 6px;
 }
 
@@ -109,16 +111,25 @@
   border: 1px solid var(--border-color);
   border-radius: 10px;
   font-size: 14px;
-  background: var(--bg-primary);
+  background: #e9edf1;
+  color: #1f2937;
   cursor: pointer;
   transition: border-color 0.2s;
+}
+
+.time-select option,
+.guests-select option {
+  background: #f2f4f7;
+  color: #1f2937;
 }
 
 .date-input:focus,
 .time-select:focus,
 .guests-select:focus {
   outline: none;
-  border-color: var(--text-primary);
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.25);
+  background: #edf1f4;
 }
 
 /* Price Info */
@@ -129,6 +140,7 @@
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
   margin-top: 16px;
+  color: #334155;
 }
 
 .price-label {
@@ -153,6 +165,18 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: var(--shadow-soft);
+  background: #f5f7f9;
+}
+
+.booking-inline-warning {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #fecdd3;
 }
 
 .total-section {
@@ -163,14 +187,14 @@
 
 .total-label {
   font-size: 16px;
-  color: var(--text-muted);
+  color: #64748b;
   font-weight: 500;
 }
 
 .total-amount {
   font-size: 32px;
   font-weight: 700;
-  color: var(--airbnb-red);
+  color: #0f172a;
 }
 
 .reserve-button {
@@ -187,6 +211,224 @@
 
 .reserve-button:hover {
   background: var(--airbnb-red-dark);
+}
+
+/* Summary Modal */
+.summary-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 24px;
+}
+
+.summary-modal {
+  width: 100%;
+  max-width: 720px;
+  background: #f7f8fa;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.25);
+  padding: 28px;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.summary-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.summary-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.summary-logo-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff385c;
+  color: #ffffff;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff385c;
+  letter-spacing: 0.3px;
+}
+
+.summary-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.summary-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.summary-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.summary-section h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #64748b;
+  display: block;
+}
+
+.summary-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-note {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.summary-link {
+  display: inline-flex;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.summary-link:hover {
+  color: #ff385c;
+  border-bottom-color: #ff385c;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.summary-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.summary-item-meta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.summary-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.summary-btn {
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 140px;
+}
+
+.summary-btn.secondary {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5f5;
+}
+
+.summary-btn.secondary:hover {
+  background: #f1f5f9;
+}
+
+.summary-btn.primary {
+  background: #ff385c;
+  color: #ffffff;
+}
+
+.summary-btn.primary:hover {
+  background: #e31c5f;
+}
+
+@media (max-width: 640px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions {
+    flex-direction: column;
+  }
 }
 
 /* iPad Portrait (768px) */
