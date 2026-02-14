@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { DateRangePicker } from 'react-date-range';
+import { format } from 'date-fns';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import AIDialog from './AIDialog';
 import './Navbar.css';
 
@@ -6,6 +10,14 @@ const Navbar = ({ onContinue }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }
+  ]);
+  const [hasSelectedDates, setHasSelectedDates] = useState(false);
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -24,6 +36,30 @@ const Navbar = ({ onContinue }) => {
 
   const handleNameChange = (e) => {
     setGuestName(e.target.value);
+  };
+
+  const handleDateChange = (ranges) => {
+    setDateRange([ranges.selection]);
+    setHasSelectedDates(true);
+  };
+
+  const formatDateRange = () => {
+    if (hasSelectedDates && dateRange[0].startDate && dateRange[0].endDate) {
+      const start = format(dateRange[0].startDate, 'MMM d');
+      const end = format(dateRange[0].endDate, 'MMM d');
+      
+      // If same date, just show one date
+      if (start === end) {
+        return start;
+      }
+      return `${start} - ${end}`;
+    }
+    return 'Add dates';
+  };
+
+  // Close calendar when clicking outside
+  const handleCalendarClick = (e) => {
+    e.stopPropagation();
   };
 
   return (
@@ -87,61 +123,46 @@ const Navbar = ({ onContinue }) => {
               />
             </div>
             <span className="search-divider" />
-            <div className="search-field">
+            <div className="search-field" style={{ position: 'relative' }}>
               <label className="search-label">When</label>
               <input 
                 type="text" 
-                placeholder="Add dates" 
+                placeholder={formatDateRange()}
                 className="search-input"
                 onClick={() => setShowCalendar(!showCalendar)}
                 readOnly
+                value={formatDateRange()}
               />
               {showCalendar && (
-                <div className="calendar-popup" onClick={(e) => e.stopPropagation()}>
-                  <div className="calendar-header">February 2026</div>
-                  <div className="calendar-grid">
-                    <div className="calendar-day-header">Sun</div>
-                    <div className="calendar-day-header">Mon</div>
-                    <div className="calendar-day-header">Tue</div>
-                    <div className="calendar-day-header">Wed</div>
-                    <div className="calendar-day-header">Thu</div>
-                    <div className="calendar-day-header">Fri</div>
-                    <div className="calendar-day-header">Sat</div>
-                    
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day empty"></div>
-                    <div className="calendar-day">1</div>
-                    <div className="calendar-day">2</div>
-                    <div className="calendar-day">3</div>
-                    <div className="calendar-day">4</div>
-                    <div className="calendar-day">5</div>
-                    <div className="calendar-day">6</div>
-                    <div className="calendar-day">7</div>
-                    <div className="calendar-day">8</div>
-                    <div className="calendar-day">9</div>
-                    <div className="calendar-day">10</div>
-                    <div className="calendar-day">11</div>
-                    <div className="calendar-day">12</div>
-                    <div className="calendar-day today">13</div>
-                    <div className="calendar-day">14</div>
-                    <div className="calendar-day">15</div>
-                    <div className="calendar-day">16</div>
-                    <div className="calendar-day">17</div>
-                    <div className="calendar-day">18</div>
-                    <div className="calendar-day">19</div>
-                    <div className="calendar-day">20</div>
-                    <div className="calendar-day">21</div>
-                    <div className="calendar-day">22</div>
-                    <div className="calendar-day">23</div>
-                    <div className="calendar-day">24</div>
-                    <div className="calendar-day">25</div>
-                    <div className="calendar-day">26</div>
-                    <div className="calendar-day">27</div>
-                    <div className="calendar-day">28</div>
+                <div className="calendar-popup" onClick={handleCalendarClick}>
+                 <DateRangePicker
+                  ranges={dateRange}
+                  onChange={handleDateChange}
+                  months={1}
+                  direction="vertical"
+                  showDateDisplay={false}
+                  showPreview={false}
+                  showMonthAndYearPickers={false}
+                  staticRanges={[]}
+                  inputRanges={[]}
+                  minDate={new Date()}
+                  rangeColors={['#FF385C']}
+                />
+                  <div style={{ padding: '16px', textAlign: 'right', borderTop: '1px solid #eee' }}>
+                    <button 
+                      onClick={() => setShowCalendar(false)}
+                      style={{
+                        padding: '8px 16px',
+                        background: '#FF385C',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Done
+                    </button>
                   </div>
                 </div>
               )}
@@ -151,10 +172,11 @@ const Navbar = ({ onContinue }) => {
               <label className="search-label">Who</label>
               <input 
                 type="text" 
-                placeholder="Your name first please" 
-                className="search-input search-muted"
+                placeholder={hasSelectedDates ? "Add guests" : "Add dates first"}
+                className={`search-input ${!hasSelectedDates ? 'search-muted' : ''}`}
                 value={guestName}
                 onChange={handleNameChange}
+                disabled={!hasSelectedDates}
               />
             </div>
             <button className="search-button" aria-label="Search" onClick={openDialog}>

@@ -11,9 +11,6 @@ const AIDialog = ({ isOpen, onClose, userName }) => {
   const hasShownGreeting = useRef(false);
   const [selectedExperiences, setSelectedExperiences] = useState([]);
   const [viewMode, setViewMode] = useState('chat'); // 'chat' or 'review'
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(() => new Date());
 
   // Sample AI responses with photo suggestions
   const aiResponses = {
@@ -179,73 +176,6 @@ const AIDialog = ({ isOpen, onClose, userName }) => {
     setViewMode('chat');
   };
 
-  const getMonthDays = (year, month) => new Date(year, month + 1, 0).getDate();
-
-  const makeDateKey = (year, month, day) => {
-    const mm = String(month + 1).padStart(2, '0');
-    const dd = String(day).padStart(2, '0');
-    return `${year}-${mm}-${dd}`;
-  };
-
-  const handleDayClick = (year, month, day) => {
-    const dateKey = makeDateKey(year, month, day);
-
-    if (!startDate || (startDate && endDate)) {
-      setStartDate(dateKey);
-      setEndDate(null);
-      return;
-    }
-
-    if (dateKey < startDate) {
-      setEndDate(startDate);
-      setStartDate(dateKey);
-      return;
-    }
-
-    setEndDate(dateKey);
-  };
-
-  const formatDateLabel = (dateKey) => {
-    if (!dateKey) return null;
-    const [year, month, day] = dateKey.split('-').map(Number);
-    const date = new Date(year, month - 1, day, 12);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
-
-  const renderCalendarDays = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const totalDays = getMonthDays(year, month);
-    const startWeekday = new Date(year, month, 1).getDay();
-    const days = [];
-    const startKey = startDate;
-    const endKey = endDate;
-
-    for (let i = 0; i < startWeekday; i += 1) {
-      days.push(<div key={`empty-${i}`} className="calendar-day empty" />);
-    }
-
-    for (let day = 1; day <= totalDays; day += 1) {
-      const dateKey = makeDateKey(year, month, day);
-      const isStart = startKey === dateKey;
-      const isEnd = endKey === dateKey;
-      const isInRange = startKey && endKey && dateKey > startKey && dateKey < endKey;
-
-      days.push(
-        <button
-          type="button"
-          key={dateKey}
-          className={`calendar-day ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''} ${isInRange ? 'in-range' : ''}`}
-          onClick={() => handleDayClick(year, month, day)}
-        >
-          {day}
-        </button>
-      );
-    }
-
-    return days;
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -261,52 +191,6 @@ const AIDialog = ({ isOpen, onClose, userName }) => {
 
         {viewMode === 'chat' ? (
           <>
-            <div className="calendar-panel">
-              <div className="calendar-header">
-                <div>
-                  <div className="calendar-title">When are you traveling?</div>
-                  <div className="calendar-subtitle">Select a start and end date for your vacation.</div>
-                </div>
-                <div className="calendar-controls">
-                  <button
-                    type="button"
-                    className="calendar-nav"
-                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
-                    aria-label="Previous month"
-                  >
-                    ‹
-                  </button>
-                  <div className="calendar-month">
-                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                  </div>
-                  <button
-                    type="button"
-                    className="calendar-nav"
-                    onClick={() => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
-                    aria-label="Next month"
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
-              <div className="calendar-selection">
-                <div className={`date-pill ${startDate ? 'active' : ''}`}>
-                  Start: {formatDateLabel(startDate) || 'Select'}
-                </div>
-                <div className={`date-pill ${endDate ? 'active' : ''}`}>
-                  End: {formatDateLabel(endDate) || 'Select'}
-                </div>
-              </div>
-              <div className="calendar-weekdays">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                  <div key={day} className="calendar-weekday">{day}</div>
-                ))}
-              </div>
-              <div className="calendar-grid">
-                {renderCalendarDays()}
-              </div>
-            </div>
-
             <div className="ai-dialog-messages">
               {messages.map((message, index) => (
                 <div key={index} className={`message ${message.type}`}>
